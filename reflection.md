@@ -70,17 +70,24 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 ## 4. What did you learn about Streamlit and state?
 
-- In your own words, explain why the secret number kept changing in the original app.
-- How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
-- What change did you make that finally gave the game a stable secret number?
+**Why the secret number kept changing:**
+The secret number was changing because Streamlit reruns the entire Python script every time a user interacts with the app. Every button click, text input, or setting change triggers a full rerun from the top of the script. Without the `if "secret" not in st.session_state:` check, the code would execute `random.randint()` on every single rerun, creating a different secret each time. The game was essentially generating a brand new secret after every guess instead of keeping the same one throughout the game.
 
+**Streamlit reruns and session state explained:**
+Imagine Streamlit as a movie projector that restarts the film from the beginning every time someone touches a button. Without anything to "remember," all the settings reset. Session state is like a sticky note that survives the restart—it writes down values that need to stick around between reruns. So on the first run, you write down the secret number on your sticky note. On the second run (after the user clicks), you check the note first and say "oh, the secret is already here, skip generating a new one." This way the secret stays the same throughout the game.
 
+**What made the secret number stable:**
+The fix was using `if "secret" not in st.session_state: st.session_state.secret = random.randint(low, high)`. This checks if the secret already exists in session state. If it does, skip generating a new one. If it's the first time, create it and store it. By doing this only once at the start and never overwriting it during gameplay, the secret becomes stable and persists through all the reruns that happen as the player makes guesses.
 
 ---
 
 ## 5. Looking ahead: your developer habits
 
-- What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
-- What is one thing you would do differently next time you work with AI on a coding task?
-- In one or two sentences, describe how this project changed the way you think about AI generated code.
+**One habit I want to reuse:**
+Writing automated tests (pytest) alongside code fixes. In this project, every time I fixed a bug, I wrote a test to verify it worked and prevent regressions. This forced me to think clearly about what "correct" means and made me confident my fix actually solved the problem instead of just guessing. I'll use this habit in future projects because it catches bugs early and proves code works before showing it to anyone.
+
+**One thing I'd do differently with AI next time:**
+I would be more skeptical and ask more critical questions. When Copilot initially suggested the Hard difficulty ranges were "intentional design," I should have immediately asked "why would that make sense?" instead of accepting it. I found my best bug fixes (like Bug #6 with the string conversion) by reading the code myself and asking "why is this here?" rather than just running suggested code. Next time I'll trust my own critical thinking as much as AI suggestions.
+
+**How this changed my thinking about AI code:**
+AI can write syntactically perfect code that's logically broken—like hints that point in the wrong direction or difficulty ranges that are backwards. This taught me that AI is an incredible assistant for speed and boilerplate, but it's not a replacement for human judgment. Every AI-generated feature needs verification through testing and manual inspection, because "it compiles" doesn't mean "it's correct."

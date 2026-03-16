@@ -4,26 +4,50 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 ## 1. What was broken when you started?
 
-- What did the game look like the first time you ran it?
-- List at least two concrete bugs you noticed at the start  
-  (for example: "the secret number kept changing" or "the hints were backwards").
+**Bug #1: Hard difficulty is easier than Normal**
+- Expected: Hard difficulty should have the largest number range (most difficult to guess).
+- Actually happened: Hard returns a range of 1-50, but Normal returns 1-100. Hard is actually easier to win at because there are fewer possible numbers.
+
+**Bug #2: Range display doesn't match difficulty**
+- Expected: The game should tell me the correct range for my chosen difficulty (1-20 for Easy, 1-100 for Normal, 1-50 for Hard).
+- Actually happened: The game always displays "Guess a number between 1 and 100" no matter what difficulty I pick.
+
+**Bug #3: "New Game" ignores the difficulty setting**
+- Expected: When I click "New Game," the secret number should stay within the range I selected (e.g., 1-20 for Easy).
+- Actually happened: The "New Game" button always generates a secret between 1-100, ignoring my difficulty choice.
 
 ---
 
 ## 2. How did you use AI as a teammate?
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+**AI Tool Used:** Copilot Chat (using separate chat sessions per bug)
+
+**Correct AI Suggestion:**
+- **What the AI suggested:** When I described the Hard difficulty bug (range 1-50 vs Normal 1-100), Copilot immediately identified the logic error and suggested changing Hard to `return 1, 200` to make it properly harder. It also suggested fixing the dependent code (the "New Game" button and display text) to use the dynamic range values instead of hardcoding "1 and 100."
+- **How I verified it:** I ran the updated game and played through multiple difficulties. Easy was fast to win (1-20), Normal took longer (1-100), and Hard took the most attempts (1-200). The difficulty scaling now makes sense. The tests I wrote confirmed the ranges are correct.
+
+**Misleading/Incorrect AI Suggestion:**
+- **What the AI suggested:** In the first chat about bug #1, Copilot initially suggested the ranges were "intentional design" for difficulty variants (like, maybe Hard was meant to be "precision hard" with fewer numbers). This was clearly wrong because the attempt limits showed Hard gets only 5 attempts vs Normal's 8, meaning fewer numbers to search through makes an easier game, not harder.
+- **How I verified it:** I tested by playing through all difficulties and confirmed larger ranges = harder games. The UI also showed attempts left; matching that with range size made the bug obvious. Copilot corrected itself when I pushed back with evidence.
 
 ---
 
 ## 3. Debugging and testing your fixes
 
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
+**How I decided if a bug was really fixed:**
+- For Bug #1 (Hard range): I manually tested the game by playing all three difficulties and counting attempts needed to win. Hard now takes more guesses due to larger range, confirming the fix worked.
+- For Bug #3 (New Game range): After selecting Easy mode and clicking "New Game," the secret now stays within 1-20 instead of jumping to random 1-100 numbers.
+- I also wrote automated pytest tests to verify the fixes programmatically.
+
+**Tests I ran:**
+1. **Manual game play:** Played through Easy, Normal, and Hard. Confirmed difficulty progression makes sense.
+2. **Pytest automated tests:** 
+   - `test_hard_difficulty_range_larger_than_normal`: Verifies Hard range > Normal range
+   - `test_get_range_for_difficulty_returns_correct_bounds`: Confirms exact values (1,20), (1,100), (1,200)
+   - Both tests pass ✅
+
+**How AI helped with testing:**
+- Copilot suggested the specific assertions for the test cases. It also advised me to check "import paths" in pytest when the tests failed initially, which helped me fix the module import from logic_utils.py.
 
 ---
 

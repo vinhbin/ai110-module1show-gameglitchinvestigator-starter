@@ -25,13 +25,45 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+**Game Purpose:**
+This is a number-guessing game built with Streamlit where players guess a secret number between a difficulty-dependent range (Easy: 1-20, Normal: 1-100, Hard: 1-200). The game provides hints ("Go Higher"/"Go Lower"), tracks attempts and score, and has different difficulty levels with varying attempt limits.
+
+**Bugs Found:**
+1. Hard difficulty range (1-50) was easier than Normal (1-100) - fixed to 1-200
+2. Range display was hardcoded to "1 and 100" instead of showing actual difficulty bounds
+3. "New Game" button ignored difficulty setting and always used 1-100 range
+4. Hint messages were backwards (said "Go Higher" when should say "Go Lower")
+5. Game over message didn't disappear after clicking "New Game"
+6. Secret was being converted to string on even attempts, causing type comparison errors
+
+**Fixes Applied:**
+- Updated `get_range_for_difficulty()` to return proper ranges for each difficulty
+- Made display text dynamic using `f"Guess a number between {low} and {high}"`
+- Fixed "New Game" button to use `random.randint(low, high)` from current difficulty
+- Corrected hint logic in `check_guess()` to show "Go LOWER" when guess > secret
+- Added `st.session_state.status = "playing"` reset in New Game handler
+- Removed string conversion hack and simplified `check_guess()` for consistent integer comparisons
+- Refactored all game logic into `logic_utils.py` and added 6 automated pytest tests (all passing)
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+**Screenshot of Fixed, Winning Game:**
+![alt text](image.png)
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
+
+**Test Results:**
+![alt text](image-4.png)
+
+All 6 tests pass:
+- ✓ test_winning_guess
+- ✓ test_guess_too_high  
+- ✓ test_guess_too_low
+- ✓ test_hard_difficulty_range_larger_than_normal
+- ✓ test_get_range_for_difficulty_returns_correct_bounds
+- ✓ test_hint_messages_are_correct
 
 ## 🚀 Stretch Features
 

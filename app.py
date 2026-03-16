@@ -75,6 +75,9 @@ if new_game:
     # FIX: Changed from hardcoded random.randint(1, 100) to use (low, high) from difficulty
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(low, high)
+    st.session_state.status = "playing"  # FIX: Reset status so game-over message disappears
+    st.session_state.score = 0  # FIX: Reset score for new game
+    st.session_state.history = []  # FIX: Clear history for new game
     st.success("New game started.")
     st.rerun()
 

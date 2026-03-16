@@ -39,3 +39,17 @@ def test_get_range_for_difficulty_returns_correct_bounds():
     assert get_range_for_difficulty("Easy") == (1, 20)
     assert get_range_for_difficulty("Normal") == (1, 100)
     assert get_range_for_difficulty("Hard") == (1, 200)
+
+
+# FIX: Bug with hints being backwards
+def test_hint_messages_are_correct():
+    """Verify hints tell you the right direction to guess."""
+    # If you guess 59 and secret is 50, you need to go LOWER
+    outcome, message = check_guess(59, 50)
+    assert outcome == "Too High"
+    assert "LOWER" in message, f"Expected 'LOWER' in hint but got: {message}"
+    
+    # If you guess 1 and secret is 50, you need to go HIGHER
+    outcome, message = check_guess(1, 50)
+    assert outcome == "Too Low"
+    assert "HIGHER" in message, f"Expected 'HIGHER' in hint but got: {message}"

@@ -24,6 +24,10 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Expected: When I click "New Game," the game should restart cleanly without any old messages.
 - Actually happened: The "Game Over" error message stayed on screen even after clicking "New Game" because the game status wasn't being reset.
 
+**Bug #6: Secret number was being converted to string on even attempts** (found during code review)
+- Expected: The secret should always be an integer so comparison works correctly on every guess.
+- Actually happened: The code had `if attempts % 2 == 0: secret = str(secret)` which converted the secret to a string on even attempts. This caused type mismatches when comparing integer guesses to string secrets, requiring a hacky `try/except TypeError` workaround in the check_guess function.
+
 ---
 
 ## 2. How did you use AI as a teammate?
@@ -47,10 +51,11 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - For Bug #3 (New Game range): After selecting Easy mode and clicking "New Game," the secret now stays within 1-20 instead of jumping to random 1-100 numbers.
 - For Bug #4 (backwards hints): I tested with specific numbers (guess 59 vs secret 50) to verify the hint now correctly says "Go LOWER."
 - For Bug #5 (game over message): Played a game until "Game Over," then clicked "New Game" and verified the message disappeared and the game restarted cleanly.
+- For Bug #6 (string conversion): I reviewed the code and realized the secret was being converted to a string on even attempts. Removing this line and simplifying check_guess means the function now handles all attempts the same way.
 - I also wrote automated pytest tests to verify the fixes programmatically.
 
 **Tests I ran:**
-1. **Manual game play:** Played through Easy, Normal, and Hard. Confirmed difficulty progression makes sense. Also tested the hints give correct directions after each guess.
+1. **Manual game play:** Played through Easy, Normal, and Hard. Confirmed difficulty progression makes sense. Also tested the hints give correct directions after each guess, including on even-numbered attempts.
 2. **Pytest automated tests:** 
    - `test_hard_difficulty_range_larger_than_normal`: Verifies Hard range > Normal range ✓
    - `test_get_range_for_difficulty_returns_correct_bounds`: Confirms exact values (1,20), (1,100), (1,200) ✓
@@ -59,7 +64,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
    - **Total: 6/6 tests passing** ✓
 
 **How AI helped with testing:**
-- Copilot suggested the specific assertions for the test cases. It also advised me to check "import paths" in pytest when the tests failed initially, which helped me fix the module import from logic_utils.py. When I found the hint messages were backwards, Copilot helped me write a clear test that would catch this bug.
+- Copilot suggested the specific assertions for the test cases. It also advised me to check "import paths" in pytest when the tests failed initially, which helped me fix the module import from logic_utils.py. When I found the hint messages were backwards, Copilot helped me write a clear test that would catch this bug. However, I also found additional bugs by reading the code carefully myself and asking critical questions about why certain things were being done.
 
 ---
 
@@ -68,6 +73,8 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - In your own words, explain why the secret number kept changing in the original app.
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 - What change did you make that finally gave the game a stable secret number?
+
+
 
 ---
 

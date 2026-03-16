@@ -42,19 +42,11 @@ def check_guess(guess, secret):
     if guess == secret:
         return "Win", "🎉 Correct!"
 
-    try:
-        if guess > secret:
-            # FIX: Hint was backwards! If guess > secret, need to go LOWER, not HIGHER
-            return "Too High", "📉 Go LOWER!"
-        else:
-            return "Too Low", "📈 Go HIGHER!"
-    except TypeError:
-        g = str(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            # FIX: Hint was backwards! If guess > secret, need to go LOWER, not HIGHER
-            return "Too High", "📉 Go LOWER!"
+    # FIX: Removed unnecessary try/except TypeError since secret is always an integer
+    if guess > secret:
+        # FIX: Hint was backwards! If guess > secret, need to go LOWER, not HIGHER
+        return "Too High", "📉 Go LOWER!"
+    else:
         return "Too Low", "📈 Go HIGHER!"
 
 
